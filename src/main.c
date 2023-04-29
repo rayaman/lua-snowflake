@@ -31,16 +31,6 @@ static int g_sequence = 0;
 
 #define SEQUENCE_MASK (0xffffffff ^ (0xffffffff << SEQUENCE_BITS))
 
-static uint64_t get_timestamp() {
-    // LARGE_INTEGER frequency;        // ticks per second
-    // LARGE_INTEGER t1;
-    // QueryPerformanceFrequency(&frequency);
-    // QueryPerformanceCounter(&t1);
-
-    // return t1.QuadPart * 1000.0 / frequency.QuadPart;
-    return getns();
-}
-
 static uint64_t get_timestamp()
 {
     struct timespec ts;
