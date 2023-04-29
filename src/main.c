@@ -41,7 +41,7 @@ static uint64_t get_timestamp() {
     return getns();
 }
 
-static uint64_t getns(void)
+static uint64_t get_timestamp()
 {
     struct timespec ts;
 
