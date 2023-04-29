@@ -1,12 +1,15 @@
 #include <lua.h>
 #include <lauxlib.h>
 #include <stdbool.h>
+#include "c.h"
 #include <time.h>
 
 
 #if LUA_VERSION_NUM < 502
 #define luaL_newlib(L, l) ( lua_newtable( L ), luaL_register( L, NULL, l ) )
 #endif
+
+static const unsigned __int64 epoch = ((unsigned __int64) 116444736000000000ULL);
 
 static bool initialized = false;
 
