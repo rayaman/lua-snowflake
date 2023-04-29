@@ -27,15 +27,33 @@ static int g_sequence = 0;
 
 #define SEQUENCE_MASK (0xffffffff ^ (0xffffffff << SEQUENCE_BITS))
 
-static long get_timestamp() {
+int
+gettimeofday(struct timeval * tp, struct timezone * tzp)
+{
+    FILETIME    file_time;
+    SYSTEMTIME  system_time;
+    ULARGE_INTEGER ularge;
+
+    GetSystemTime(&system_time);
+    SystemTimeToFileTime(&system_time, &file_time);
+    ularge.LowPart = file_time.dwLowDateTime;
+    ularge.HighPart = file_time.dwHighDateTime;
+
+    tp->tv_sec = (uint64_t) ((ularge.QuadPart - epoch) / 10000000L);
+    tp->tv_usec = (uint64_t) (system_time.wMilliseconds * 1000);
+
+    return 0;
+}
+
+static uint64_t get_timestamp() {
     struct timeval tv;
     gettimeofday(&tv, NULL);
 
     return tv.tv_sec * 1000 + tv.tv_usec / 1000;
 }
 
-static long get_til_next_millis(long last_timestamp) {
-    long ts = get_timestamp();
+static uint64_t get_til_next_millis(uint64_t last_timestamp) {
+    uint64_t ts = get_timestamp();
     while (ts < last_timestamp) {
         ts = get_timestamp();
     }
@@ -64,7 +82,7 @@ static int luasnowflake_next_id(lua_State *L) {
         return luaL_error(L, "snowflake.init must be called first");
     }
 
-    long ts = get_timestamp();
+    uint64_t ts = get_timestamp();
 
     if (g_last_timestamp == ts) {
         g_sequence = (g_sequence + 1) & SEQUENCE_MASK;
