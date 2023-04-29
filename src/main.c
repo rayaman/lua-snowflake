@@ -38,10 +38,10 @@ static uint64_t get_timestamp() {
     // QueryPerformanceCounter(&t1);
 
     // return t1.QuadPart * 1000.0 / frequency.QuadPart;
-    return time_ns();
+    return time_nano();
 }
 
-static uint64_t time_ns(void)
+static uint64_t time_nano(void)
 {
     struct timespec ts;
 
