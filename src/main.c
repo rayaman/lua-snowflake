@@ -29,7 +29,7 @@ static int g_sequence = 0;
 
 static long get_timestamp() {
     LARGE_INTEGER frequency;        // ticks per second
-    LARGE_INTEGER t1
+    LARGE_INTEGER t1;
     double elapsedTime;
     QueryPerformanceFrequency(&frequency);
     QueryPerformanceCounter(&t1);
