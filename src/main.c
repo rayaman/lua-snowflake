@@ -1,15 +1,12 @@
 #include <lua.h>
 #include <lauxlib.h>
 #include <stdbool.h>
-#include <time.h>
-#include <minwinbase.h>
+#include <windows.h>
 
 
 #if LUA_VERSION_NUM < 502
 #define luaL_newlib(L, l) ( lua_newtable( L ), luaL_register( L, NULL, l ) )
 #endif
-
-static const unsigned __int64 epoch = ((unsigned __int64) 116444736000000000ULL);
 
 static bool initialized = false;
 
@@ -30,32 +27,18 @@ static int g_sequence = 0;
 
 #define SEQUENCE_MASK (0xffffffff ^ (0xffffffff << SEQUENCE_BITS))
 
-int gettimeofday(struct timeval * tp, struct timezone * tzp)
-{
-    FILETIME    file_time;
-    SYSTEMTIME  system_time;
-    ULARGE_INTEGER ularge;
+static long get_timestamp() {
+    LARGE_INTEGER frequency;        // ticks per second
+    LARGE_INTEGER t1
+    double elapsedTime;
+    QueryPerformanceFrequency(&frequency);
+    QueryPerformanceCounter(&t1);
 
-    GetSystemTime(&system_time);
-    SystemTimeToFileTime(&system_time, &file_time);
-    ularge.LowPart = file_time.dwLowDateTime;
-    ularge.HighPart = file_time.dwHighDateTime;
-
-    tp->tv_sec = (uint64_t) ((ularge.QuadPart - epoch) / 10000000L);
-    tp->tv_usec = (uint64_t) (system_time.wMilliseconds * 1000);
-
-    return 0;
+    return t1.QuadPart * 1000.0 / frequency.QuadPart;
 }
 
-static uint64_t get_timestamp() {
-    struct timeval tv;
-    gettimeofday(&tv, NULL);
-
-    return tv.tv_sec * 1000 + tv.tv_usec / 1000;
-}
-
-static uint64_t get_til_next_millis(uint64_t last_timestamp) {
-    uint64_t ts = get_timestamp();
+static long get_til_next_millis(long last_timestamp) {
+    long ts = get_timestamp();
     while (ts < last_timestamp) {
         ts = get_timestamp();
     }
@@ -84,7 +67,7 @@ static int luasnowflake_next_id(lua_State *L) {
         return luaL_error(L, "snowflake.init must be called first");
     }
 
-    uint64_t ts = get_timestamp();
+    long ts = get_timestamp();
 
     if (g_last_timestamp == ts) {
         g_sequence = (g_sequence + 1) & SEQUENCE_MASK;
