@@ -1,7 +1,6 @@
 #include <lua.h>
 #include <lauxlib.h>
 #include <stdbool.h>
-#include "c.h"
 #include <time.h>
 
 
