@@ -1,7 +1,7 @@
 #include <lua.h>
 #include <lauxlib.h>
 #include <stdbool.h>
-#include <sys/time.h>
+#include <time.h>
 
 
 #if LUA_VERSION_NUM < 502
