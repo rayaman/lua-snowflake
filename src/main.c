@@ -15,7 +15,6 @@ static int g_node_id = 0;
 static long g_last_timestamp = -1;
 static int g_sequence = 0;
 
-typedef uint64_t long long
 
 // 2014-10-20T15:00:00Z
 #define SNOWFLAKE_EPOC 1413817200000L
@@ -29,9 +28,9 @@ typedef uint64_t long long
 
 #define SEQUENCE_MASK (0xffffffff ^ (0xffffffff << SEQUENCE_BITS))
 
-static uint64_t get_timestamp() {
-    uint64_t frequency;        // ticks per second
-    uint64_t t1;
+static long long get_timestamp() {
+    long long frequency;        // ticks per second
+    long long t1;
     QueryPerformanceFrequency(&frequency);
     QueryPerformanceCounter(&t1);
 
@@ -39,7 +38,7 @@ static uint64_t get_timestamp() {
 }
 
 static long get_til_next_millis(long last_timestamp) {
-    uint64_t ts = get_timestamp();
+    long long ts = get_timestamp();
     while (ts < last_timestamp) {
         ts = get_timestamp();
     }
@@ -68,7 +67,7 @@ static int luasnowflake_next_id(lua_State *L) {
         return luaL_error(L, "snowflake.init must be called first");
     }
 
-    uint64_t ts = get_timestamp();
+    long long ts = get_timestamp();
 
     if (g_last_timestamp == ts) {
         g_sequence = (g_sequence + 1) & SEQUENCE_MASK;
