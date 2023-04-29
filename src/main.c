@@ -2,6 +2,7 @@
 #include <lauxlib.h>
 #include <stdbool.h>
 #include <time.h>
+#include <minwinbase.h>
 
 
 #if LUA_VERSION_NUM < 502
@@ -29,8 +30,7 @@ static int g_sequence = 0;
 
 #define SEQUENCE_MASK (0xffffffff ^ (0xffffffff << SEQUENCE_BITS))
 
-int
-gettimeofday(struct timeval * tp, struct timezone * tzp)
+int gettimeofday(struct timeval * tp, struct timezone * tzp)
 {
     FILETIME    file_time;
     SYSTEMTIME  system_time;
