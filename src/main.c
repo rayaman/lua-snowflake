@@ -28,7 +28,6 @@ static int g_sequence = 0;
 #define SEQUENCE_MASK (0xffffffff ^ (0xffffffff << SEQUENCE_BITS))
 
 #define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
 #include <stdint.h> // portable: uint64_t   MSVC: __int64 
 
 // MSVC defines this in winsock2.h!?
