@@ -27,10 +27,9 @@ static int g_sequence = 0;
 
 #define SEQUENCE_MASK (0xffffffff ^ (0xffffffff << SEQUENCE_BITS))
 
-static long get_timestamp() {
-    LARGE_INTEGER frequency;        // ticks per second
-    LARGE_INTEGER t1;
-    double elapsedTime;
+static uint64_t get_timestamp() {
+    uint64_t frequency;        // ticks per second
+    uint64_t t1;
     QueryPerformanceFrequency(&frequency);
     QueryPerformanceCounter(&t1);
 
@@ -38,7 +37,7 @@ static long get_timestamp() {
 }
 
 static long get_til_next_millis(long last_timestamp) {
-    long ts = get_timestamp();
+    uint64_t ts = get_timestamp();
     while (ts < last_timestamp) {
         ts = get_timestamp();
     }
@@ -67,7 +66,7 @@ static int luasnowflake_next_id(lua_State *L) {
         return luaL_error(L, "snowflake.init must be called first");
     }
 
-    long ts = get_timestamp();
+    uint64_t ts = get_timestamp();
 
     if (g_last_timestamp == ts) {
         g_sequence = (g_sequence + 1) & SEQUENCE_MASK;
