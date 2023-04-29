@@ -15,6 +15,8 @@ static int g_node_id = 0;
 static long g_last_timestamp = -1;
 static int g_sequence = 0;
 
+typedef uint64_t long long
+
 // 2014-10-20T15:00:00Z
 #define SNOWFLAKE_EPOC 1413817200000L
 
