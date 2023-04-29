@@ -16,7 +16,7 @@ static bool initialized = false;
 
 static int g_datacenter_id = 0;
 static int g_node_id = 0;
-static long g_last_timestamp = -1;
+static uint64_t g_last_timestamp = -1;
 static int g_sequence = 0;
 
 // 2014-10-20T15:00:00Z
@@ -43,8 +43,8 @@ static uint64_t get_timestamp()
     return 1000000000 * ts.tv_sec + ts.tv_nsec;
 }
 
-static long get_til_next_millis(long last_timestamp) {
-    long ts = get_timestamp();
+static uint64_t get_til_next_millis(uint64_t last_timestamp) {
+    uint64_t ts = get_timestamp();
     while (ts < last_timestamp) {
         ts = get_timestamp();
     }
@@ -73,7 +73,7 @@ static int luasnowflake_next_id(lua_State *L) {
         return luaL_error(L, "snowflake.init must be called first");
     }
 
-    long ts = get_timestamp();
+    uint64_t ts = get_timestamp();
 
     if (g_last_timestamp == ts) {
         g_sequence = (g_sequence + 1) & SEQUENCE_MASK;
